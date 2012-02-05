@@ -6,23 +6,23 @@
  * @brief Interface for Digital Signal Processing
  */
 
-#ifndef _MUGED_DSPINTERFACE_H_
-#define _MUGED_DSPINTERFACE_H_
+#ifndef __MUGED_DSP__H_
+#define __MUGED_DSP__H_
 
 #include "MUGED_Definitions.h"
 #include "MUGED_Types.h"
 
-class MUGED_DSPInterface
+class _MUGED_DSP_
 {
 public:
 
 	/**
-	 * @fn DSPInterface()
+	 * @fn _MUGED_DSP_()
 	 *
 	 * Default constructor
 	 */
-	MUGED_DSPInterface();
-	virtual ~MUGED_DSPInterface();
+	_MUGED_DSP_();
+	virtual ~_MUGED_DSP_();
 
 	/**
 	 * @fn muged_1D_correlation(muged_array& fsignal, muged_array& ssignal,
@@ -126,4 +126,4 @@ public:
 
 };
 
-#endif /* _MUGED_DSPINTERFACE_H_ */
+#endif /* __MUGED_DSP__H_ */

@@ -3,23 +3,34 @@
  * @date 2011-12-31
  * @author Kamil Sorokosz
  *
+ * @brief File contains scalar, array, matrix types definitions
  */
 
 #ifndef _MUGED_TYPES_H_
 #define _MUGED_TYPES_H_
 
+#include "MUGED_Complex.h"
+
 /**
  * @typedef muged_scalar
- * @brief Scalar type
+ * @brief Scalar complex type
  */
-typedef double muged_scalar;
+typedef MUGED_Complex muged_scalar;
 
+/**
+ * @struct _muged_array_
+ * Array for scalars - 1D signal
+ */
 struct _muged_array_
 {
 	muged_scalar* array;
 	size_t length;
 };
 
+/**
+ * @struct _muged_matrix_
+ * 2D array for 2D signals
+ */
 struct _muged_matrix_
 {
 	muged_scalar** matrix;

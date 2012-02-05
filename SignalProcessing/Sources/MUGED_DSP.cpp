@@ -1,5 +1,8 @@
 #include "MUGED_DSP.h"
 
+#define EXCLUDE
+#ifndef EXCLUDE
+
 MUGED_DSP::MUGED_DSP()
 {
 }
@@ -11,36 +14,45 @@ MUGED_DSP::~MUGED_DSP()
 muged_scalar MUGED_DSP::muged_mean(muged_array& signal)
 {
 	size_t size = signal.length;
-	muged_scalar sum = INIT;
+	muged_scalar mean, sum;
 
 	for (size_t i = 0; i < size; i++)
-		sum += *(signal.array + i);
+	{
+		muged_scalar& current_scalar = (*(signal.array + i));
+		sum += current_scalar;
+	}
 
-	return sum/size;
+	mean = sum/size;
+
+	return mean;
 }
 
 muged_scalar MUGED_DSP::muged_root_mean_square(muged_array& signal)
 {
-	size_t size = signal.length;
-	muged_scalar* array = signal.array;
-	muged_scalar square_sum = INIT;
-
-	for (size_t i = 0; i < size; i++)
-		square_sum += pow(*(array + i),2);
-
-	return sqrt(square_sum/size);
+	muged_scalar mean_square = muged_mean_square(signal);
+	return mean_square.muged_sqrt();
 }
 
 muged_scalar MUGED_DSP::muged_mean_square(muged_array& signal)
 {
 	size_t size = signal.length;
 	muged_scalar* array = signal.array;
-	muged_scalar square_sum = INIT;
+	muged_scalar square_sum, mean_square;
+	square_sum.real = INIT;
+	square_sum.imaginary = INIT;
+	mean_square.real = INIT;
+	mean_square.imaginary = INIT;
 
 	for (size_t i = 0; i < size; i++)
-		square_sum += pow(*(array+i),2);
+	{
+		square_sum.real += pow((array + i)->real,2);
+		square_sum.imaginary += pow((array + i)->imaginary,2);
+	}
 
-	return square_sum/size;
+	mean_square.real = square_sum.real/size;
+	mean_square.imaginary = square_sum.imaginary/size;
+
+	return mean_square;
 }
 
 muged_scalar MUGED_DSP::muged_standard_deviation(muged_array& signal)
@@ -175,3 +187,5 @@ void MUGED_DSP::muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum)
 void MUGED_DSP::muged_kalman(muged_array& signal, muged_array& filtered_signal)
 {
 }
+
+#endif

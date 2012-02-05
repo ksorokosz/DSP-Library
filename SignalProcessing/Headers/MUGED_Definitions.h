@@ -10,7 +10,16 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
 
 #define INIT 0
+
+#ifdef DEBUG
+#define INFO(pattern,args...)   fprintf(stderr,"%25s:%3u | " pattern "\n", __FILE__, __LINE__, ##args)
+#else
+#define INFO(dummy,args...)
+#endif
 
 #endif /* _MUGED_DEFINITIONS_H_ */

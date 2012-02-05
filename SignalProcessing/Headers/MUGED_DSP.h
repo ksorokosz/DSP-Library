@@ -11,9 +11,9 @@
 
 #include "MUGED_Definitions.h"
 #include "MUGED_Types.h"
-#include "MUGED_DSPInterface.h"
+#include "_MUGED_DSP_.h"
 
-class MUGED_DSP : public MUGED_DSPInterface
+class MUGED_DSP : public _MUGED_DSP_
 {
 public:
 
