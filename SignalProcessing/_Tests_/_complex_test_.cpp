@@ -100,10 +100,12 @@ void _complex_test_()
 	INFO("--> complex test success");
 }
 
+#define EXCLUDE
+#ifndef EXCLUDE
 int main()
 {
 	_complex_test_();
 
 	return 0;
 }
-
+#endif

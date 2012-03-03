@@ -12,6 +12,12 @@
 #include "MUGED_Definitions.h"
 #include "MUGED_Types.h"
 
+/**
+ * @class _MUGED_DSP_
+ * @author Kamil Sorokosz
+ *
+ * @brief Interface for DSP class
+ */
 class _MUGED_DSP_
 {
 public:
@@ -21,8 +27,8 @@ public:
 	 *
 	 * Default constructor
 	 */
-	_MUGED_DSP_();
-	virtual ~_MUGED_DSP_();
+	_MUGED_DSP_() {};
+	virtual ~_MUGED_DSP_() {};
 
 	/**
 	 * @fn muged_1D_correlation(muged_array& fsignal, muged_array& ssignal,

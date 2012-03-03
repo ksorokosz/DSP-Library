@@ -13,6 +13,10 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <cassert>
+#include <string>
+
+using namespace std;
 
 #define INIT 0
 
@@ -21,5 +25,7 @@
 #else
 #define INFO(dummy,args...)
 #endif
+
+#define ERR_NOT_IMPLEMENTED "This method is not implemented yet"
 
 #endif /* _MUGED_DEFINITIONS_H_ */

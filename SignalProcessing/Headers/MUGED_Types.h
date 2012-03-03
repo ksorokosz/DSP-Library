@@ -9,6 +9,7 @@
 #ifndef _MUGED_TYPES_H_
 #define _MUGED_TYPES_H_
 
+#include "MUGED_Definitions.h"
 #include "MUGED_Complex.h"
 
 /**
@@ -49,6 +50,29 @@ typedef _muged_array_  muged_array;
  * @brief 2D array type
  */
 typedef _muged_matrix_ muged_matrix;
+
+/**
+ * @class MUGED_DSPException
+ *
+ * Class describing an
+ */
+class MUGED_DSPException : public exception
+{
+
+public:
+	MUGED_DSPException() { this->is_what = "Unknown Error"; }
+	MUGED_DSPException(string is_what) { this->is_what = is_what; }
+
+	virtual ~MUGED_DSPException() throw() {}
+
+	virtual const char* what() const throw()
+	{
+		return is_what.c_str();
+	}
+
+private:
+	string is_what;
+};
 
 
 #endif /* _MUGED_TYPES_H_ */

@@ -11,6 +11,21 @@
 
 #include "MUGED_Definitions.h"
 
+/**
+ * @class MUGED_Complex
+ * @author Kamil Sorokosz
+ * @brief Class allows to do the basic operations on complex values.
+ *
+ * Class implements several operations on complex values. It allows to:
+ * - get real/imaginary part
+ * - calculate absolute value
+ * - calculate angle
+ * - calculate conjugate
+ * - adding, subtracting, multiplying, dividing complex values
+ * - calculate power, e.g square power
+ * - calculate root, e.g square root
+ *
+ */
 class MUGED_Complex
 {
 public:
@@ -47,7 +62,7 @@ public:
 	 * @param scalar - specified complex
 	 * @return MUGED_Complex - complex value equal to specified
 	 */
-	MUGED_Complex& operator=(MUGED_Complex& scalar);
+	MUGED_Complex& operator=(const MUGED_Complex& scalar);
 
 	/**
 	 * @fn muged_real() const
@@ -90,10 +105,10 @@ public:
 	/**
 	 * @fn operator+(const MUGED_Complex& scalar)
 	 *
-	 * Calculates sum of current complex type and some complex scalar
+	 * Calculates sum of current complex value and some complex scalar
 	 *
 	 * @param scalar - complex value
-	 * @return MUGED_Complex - sum of input and current complex values
+	 * @return MUGED_Complex - sum of input and current complex value
 	 */
 	MUGED_Complex operator+(const MUGED_Complex& scalar);
 
@@ -113,6 +128,33 @@ public:
    * @param scalar - complex value
    */
   void operator+=(const MUGED_Complex& scalar);
+
+	/**
+	 * @fn operator-(const MUGED_Complex& scalar)
+	 *
+	 * Calculates difference between current complex value and some complex scalar
+	 *
+	 * @param scalar - complex value
+	 * @return MUGED_Complex - difference between input and current complex value
+	 */
+	MUGED_Complex operator-(const MUGED_Complex& scalar);
+
+	/**
+	 * Calculates difference between two complex values [friend function]
+	 *
+	 * @param scalar1 - first complex value
+	 * @param scalar2 - second complex value
+	 * @return MUGED_Complex - difference between input complex values
+	 */
+	friend MUGED_Complex operator-(const MUGED_Complex& scalar1, const MUGED_Complex& scalar2);
+
+	/**
+	 * Calculates difference between current complex value and input complex.
+	 * Updates the current complex value.
+	 *
+	 * @param scalar - complex value
+	 */
+	void operator-=(const MUGED_Complex& scalar);
 
 	/**
 	 * Multiplies current complex value and input argument
@@ -220,7 +262,7 @@ inline MUGED_Complex::~MUGED_Complex()
 	imaginary = INIT;
 }
 
-inline MUGED_Complex& MUGED_Complex::operator=(MUGED_Complex& scalar)
+inline MUGED_Complex& MUGED_Complex::operator=(const MUGED_Complex& scalar)
 {
 	real = scalar.muged_real();
 	imaginary = scalar.muged_imag();
@@ -285,6 +327,24 @@ inline void MUGED_Complex::operator+=(const MUGED_Complex & scalar)
 {
 	this->real += scalar.real;
 	this->imaginary += scalar.imaginary;
+}
+
+inline MUGED_Complex MUGED_Complex::operator-(const MUGED_Complex & scalar)
+{
+	MUGED_Complex reverse_scalar = MUGED_Complex(-scalar.real, -scalar.imaginary);
+	return (*this) + reverse_scalar;
+}
+
+inline MUGED_Complex operator-(const MUGED_Complex & scalar1, const MUGED_Complex & scalar2)
+{
+	MUGED_Complex reverse_scalar2 = MUGED_Complex(-scalar2.real, -scalar2.imaginary);
+	return scalar1 + reverse_scalar2;
+}
+
+inline void MUGED_Complex::operator-=(const MUGED_Complex & scalar)
+{
+	MUGED_Complex reverse_scalar = MUGED_Complex(-scalar.real, -scalar.imaginary);
+	(*this) += reverse_scalar;
 }
 
 inline MUGED_Complex MUGED_Complex::operator*(MUGED_Complex & scalar)

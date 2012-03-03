@@ -13,6 +13,25 @@
 #include "MUGED_Types.h"
 #include "_MUGED_DSP_.h"
 
+/**
+ * @class MUGED_DSP
+ * @author Kamil Sorokosz
+ *
+ * @brief Class implements basic DSP algorithms.
+ *
+ * Class implements basic DSP algorithms such as:
+ * - 1D correlation
+ * - 2D correlation (not yet)
+ * - mean
+ * - mean square
+ * - root mean square
+ * - standard deviation
+ * - Kalman filter (not yet)
+ * - Fast Fourier transform
+ *
+ * This class supports complex values.
+ * @see MUGED_Complex
+ */
 class MUGED_DSP : public _MUGED_DSP_
 {
 public:
@@ -40,7 +59,7 @@ public:
 	 */
 	void muged_1D_correlation(muged_array& fsignal, muged_array& ssignal,
 														size_t min_lag, size_t max_lag,
-														muged_array& correlation) = 0;
+														muged_array& correlation);
 
 	/**
 	 * @fn muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal, muged_matrix& correlation)
@@ -51,6 +70,7 @@ public:
 	 * @param fsignal - first 2D signal
 	 * @param ssignal - second 2D signal
 	 * @param correlation - result (memory will be allocated)
+	 * @attention Not implemented yet!
 	 */
 	void muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal,
 														muged_matrix& correlation);
@@ -74,6 +94,7 @@ public:
 	 *
 	 * @param signal - 1D signal
 	 * @param spectrum - result (memory will be allocated)
+	 * @attention Not implemented yet!
 	 */
 	void muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum);
 
@@ -114,7 +135,7 @@ public:
 	 * @fn muged_standard_deviation(muged_array& signal)
 	 * @see MUGED_DSPInterface::muged_standard_deviation(muged_array& signal, muged_scalar std)
 	 *
-	 * Calculates standard deviation of 1D signal
+	 * Calculates standard deviation of 1D signal (normalized with number of samples)
 	 *
 	 * @param signal - 1D signal
 	 * @return muged_scalar - result
@@ -131,6 +152,46 @@ public:
 	 * @param filtered_signal - result (memory will be allocated)
 	 */
 	void muged_kalman(muged_array& signal, muged_array& filtered_signal);
+
+protected:
+
+	/**
+	 * @fn muged_initialize_fft(muged_array& signal, muged_array& radix_2_signal, muged_array& spectrum)
+	 *
+	 * Appends zeros to the signal to provide divisibility by power of two and initialize spectrum
+	 *
+	 * @param signal - input signal
+	 * @param radix_2_signal - zero padded signal
+	 * @param spectrum - spectrum
+	 * @param W - wages for each twiddle factors
+	 *
+	 */
+	void muged_initialize_fft(muged_array& signal, muged_array& radix_2_signal, muged_array& spectrum, muged_array& W);
+
+	/**
+	 * @fn muged_fft_kernel(muged_array& radix_2_signal)
+	 *
+	 * FFT kernel - it calculates fft using
+	 * divide and conquer algorithm (Cooley–Tukey)
+	 *
+	 * @param radix_2_signal - time samples
+	 * @return muged_array* - spectrum
+	 *
+	 * FFT(n, a0, a1, a2, a3, ... , an-1)
+	 * {
+	 * 	if (n == 1) return a0;
+	 * 	w = e^-2πi/n;
+	 * 	(e0, e1, e2, e3,..., en/2-1) = FFT(n/2, a0, a2, a4, a6,..., an-2);
+	 * 	(d0, d1, d2, d3,..., dn/2-1) = FFT(n/2, a1, a3, a5, a7,..., an-1);
+	 * 	for k = 0 to n/2-1
+	 * 	{
+	 * 		y_k = e_k + w^k*d_k;
+	 * 		y_k+n/2 = e_k – w^k*d_k
+	 * 	};
+	 * 	return (y1, y2, y3,..., yn-1);
+	 * }
+	 */
+	muged_array* muged_fft_kernel(muged_array& radix_2_signal);
 
 };
 
