@@ -46,8 +46,8 @@ public:
 
 	/**
 	 * @fn muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal,
-	 * 													muged_scalar min_lag, muged_scalar max_lag,
-	 *													muged_matrix& correlation)
+	 *                          muged_scalar min_lag, muged_scalar max_lag,
+	 *                          muged_matrix& correlation)
 	 *
 	 * Calculates 2D correlation of signals in ranges: -max_lag : -min_lag and min_lag : max_lag
 	 *
@@ -58,8 +58,8 @@ public:
 	 * @param correlation - result (memory will be allocated)
 	 */
 	void muged_1D_correlation(muged_array& fsignal, muged_array& ssignal,
-														size_t min_lag, size_t max_lag,
-														muged_array& correlation);
+                            size_t min_lag, size_t max_lag,
+                            muged_array& correlation);
 
 	/**
 	 * @fn muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal, muged_matrix& correlation)
@@ -73,7 +73,7 @@ public:
 	 * @attention Not implemented yet!
 	 */
 	void muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal,
-														muged_matrix& correlation);
+                            muged_matrix& correlation);
 
 	/**
 	 * @fn muged_1D_fft(muged_array& signal, muged_array& spectrum)

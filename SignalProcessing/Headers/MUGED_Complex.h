@@ -190,15 +190,17 @@ public:
 	void operator/=(double value);
 
 	/**
+	 * Divides current complex value by another complex
 	 *
-	 * @param scalar
-	 * @return
+	 * @param scalar - specified complex value
+	 * @return MUGED_Complex - division result
 	 */
 	MUGED_Complex operator/(MUGED_Complex& scalar);
 
 	/**
+	 * Divides current complex value by another complex
 	 *
-	 * @param scalar
+	 * @param scalar - specified complex value
 	 */
 	void operator/=(MUGED_Complex& scalar);
 
@@ -224,7 +226,10 @@ public:
 
 private:
 
+	/// Real part of complex value
 	double real;
+
+	/// Imaginary part of complex value
 	double imaginary;
 };
 
