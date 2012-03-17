@@ -139,6 +139,28 @@ void MUGED_DSP::muged_1D_fft(muged_array& signal, muged_array& spectrum)
 	delete result;
 }
 
+void MUGED_DSP::muged_1D_ifft(muged_array& spectrum, muged_array& signal)
+{
+	muged_array radix_2_signal;
+	muged_array W;
+
+	//Initialize IFFT
+	muged_initialize_fft(spectrum, radix_2_signal, signal, W);
+
+	//Calculate IFFT
+	muged_array* result = muged_ifft_kernel(radix_2_signal);
+
+	//Store result
+	for (unsigned int i = 0; i < signal.length; i++)
+		signal.array[i] = (*result).array[i]/radix_2_signal.length;
+
+	//Clean memory
+	delete [] radix_2_signal.array;
+	delete [] result->array;
+	delete result;
+
+}
+
 void MUGED_DSP::muged_initialize_fft(muged_array& signal, muged_array& radix_2_signal, muged_array& spectrum, muged_array& W)
 {
 	//Current signal length
@@ -163,6 +185,8 @@ void MUGED_DSP::muged_initialize_fft(muged_array& signal, muged_array& radix_2_s
 		else
 			radix_2_signal.array[i] = muged_scalar();
 	}
+
+	///TODO calculate twiddle factors
 }
 
 muged_array* MUGED_DSP::muged_fft_kernel(muged_array& radix_2_signal)
@@ -228,7 +252,75 @@ muged_array* MUGED_DSP::muged_fft_kernel(muged_array& radix_2_signal)
 	return spectrum;
 }
 
+muged_array* MUGED_DSP::muged_ifft_kernel(muged_array& radix_2_signal)
+{
+	size_t N = radix_2_signal.length;
+
+	//Create output array
+	muged_array* signal = new muged_array;
+
+	(*signal).length = N;
+	(*signal).array = new muged_scalar[(*signal).length];
+
+	//Stop condition
+	if (N == 1)
+	{
+		for (unsigned int i = 0; i < (*signal).length; i++)
+			(*signal).array[i] = radix_2_signal.array[i];
+
+		//Output
+		return signal;
+	}
+
+	double pi = 4 * atan(1);
+
+	//Calculate W - wage of twiddle factor
+	muged_scalar W = muged_scalar(1, -2*pi/N, false).muged_conj();
+
+	//Even part
+	muged_array even_part;
+	even_part.length = N/2;
+	even_part.array = new muged_scalar[even_part.length];
+
+	for (unsigned int sample = 0; sample < N; sample += 2)
+		even_part.array[sample/2] = radix_2_signal.array[sample];
+
+	//Odd part
+	muged_array odd_part;
+	odd_part.length = N/2;
+	odd_part.array = new muged_scalar[odd_part.length];
+
+	for (unsigned int sample = 1; sample < N; sample += 2)
+		odd_part.array[sample/2] = radix_2_signal.array[sample];
+
+	//Spectrum
+	muged_array* signal_even = muged_ifft_kernel(even_part);
+	muged_array* signal_odd  = muged_ifft_kernel(odd_part);
+
+	for (unsigned int k = 0; k < N/2; k++)
+	{
+		(*signal).array[k]       = (*signal_even).array[k] + W.muged_pow(k)*(*signal_odd).array[k];
+		(*signal).array[k + N/2] = (*signal_even).array[k] - W.muged_pow(k)*(*signal_odd).array[k];
+	}
+
+	//Clean memory
+	delete [] signal_even->array;
+	delete [] signal_odd->array;
+	delete [] even_part.array;
+	delete [] odd_part.array;
+	delete signal_even;
+	delete signal_odd;
+
+	//Output
+	return signal;
+}
+
 void MUGED_DSP::muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum)
+{
+	throw new MUGED_DSPException(ERR_NOT_IMPLEMENTED);
+}
+
+void MUGED_DSP::muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal)
 {
 	throw new MUGED_DSPException(ERR_NOT_IMPLEMENTED);
 }

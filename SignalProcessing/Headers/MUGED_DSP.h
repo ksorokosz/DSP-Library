@@ -63,7 +63,7 @@ public:
 
 	/**
 	 * @fn muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal, muged_matrix& correlation)
-	 * @see MUGED_DSPInterface::muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal, muged_matrix& correlation)
+	 * @see _MUGED_DSP_::muged_2D_correlation(muged_matrix& fsignal, muged_matrix& ssignal, muged_matrix& correlation)
 	 *
 	 * Calculates 2D correlation of signals
 	 *
@@ -77,7 +77,7 @@ public:
 
 	/**
 	 * @fn muged_1D_fft(muged_array& signal, muged_array& spectrum)
-	 * @see MUGED_DSPInterface::muged_1D_fft(muged_array& signal, muged_array& spectrum)
+	 * @see _MUGED_DSP_::muged_1D_fft(muged_array& signal, muged_array& spectrum)
 	 *
 	 * Calculates 1D Fast Fourier Transform
 	 *
@@ -87,8 +87,19 @@ public:
 	void muged_1D_fft(muged_array& signal, muged_array& spectrum);
 
 	/**
+	 * @fn muged_1D_ifft(muged_array& spectrum, muged_array& signal)
+	 * @see MUGED_DSP_::muged_1D_ifft(muged_array& spectrum, muged_array& signal)
+	 *
+	 * Calculates 1D Inverse Fast Fourier Transform
+	 *
+	 * @param spectrum - 1D signal spectrum
+	 * @param signal - result, signal in time domain (memory will be allocated)
+	 */
+	void muged_1D_ifft(muged_array& spectrum, muged_array& signal);
+
+	/**
 	 * @fn muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum)
-	 * @see MUGED_DSPInterface::muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum)
+	 * @see _MUGED_DSP_::muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum)
 	 *
 	 * Calculates 2D Fast Fourier Transform
 	 *
@@ -99,8 +110,19 @@ public:
 	void muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum);
 
 	/**
+	 * @fn muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal)
+	 * @see _MUGED_DSP_::muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal)
+	 *
+	 * Calculates 2D Inverse Fast Fourier Transform
+	 *
+	 * @param spectrum - 2D signal spectrum
+	 * @param signal - result, signal in "time" domain (memory will be allocated)
+	 */
+	void muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal);
+
+	/**
 	 * @fn muged_mean(muged_array& signal)
-	 * @see MUGED_DSPInterface::muged_mean(muged_array& signal, muged_scalar mean)
+	 * @see _MUGED_DSP_::muged_mean(muged_array& signal, muged_scalar mean)
 	 *
 	 * Calculates mean of 1D signal
 	 *
@@ -111,7 +133,7 @@ public:
 
 	/**
 	 * @fn muged_root_mean_square(muged_array& signal)
-	 * @see MUGED_DSPInterface::muged_root_mean_square(muged_array& signal, muged_scalar rms)
+	 * @see _MUGED_DSP_::muged_root_mean_square(muged_array& signal, muged_scalar rms)
 	 *
 	 * Calculates RMS of 1D signal
 	 *
@@ -122,7 +144,7 @@ public:
 
 	/**
 	 * @fn muged_mean_square(muged_array& signal)
-	 * @see MUGED_DSPInterface::muged_mean_square(muged_array& signal, muged_scalar mean_square)
+	 * @see _MUGED_DSP_::muged_mean_square(muged_array& signal, muged_scalar mean_square)
 	 *
 	 * Calculates mean square of 1D signal
 	 *
@@ -133,7 +155,7 @@ public:
 
 	/**
 	 * @fn muged_standard_deviation(muged_array& signal)
-	 * @see MUGED_DSPInterface::muged_standard_deviation(muged_array& signal, muged_scalar std)
+	 * @see _MUGED_DSP_::muged_standard_deviation(muged_array& signal, muged_scalar std)
 	 *
 	 * Calculates standard deviation of 1D signal (normalized with number of samples)
 	 *
@@ -144,7 +166,7 @@ public:
 
 	/**
 	 * @fn muged_kalman(muged_array& signal, muged_array& filtered_signal)
-	 * @see MUGED_DSPInterface::muged_kalman(muged_array& signal, muged_array& filtered_signal)
+	 * @see _MUGED_DSP_::muged_kalman(muged_array& signal, muged_array& filtered_signal)
 	 *
 	 * Performs Kalman filtration on 1D signal
 	 *
@@ -164,7 +186,7 @@ protected:
 	 * @param radix_2_signal - zero padded signal
 	 * @param spectrum - spectrum
 	 * @param W - wages for each twiddle factors
-	 *
+	 * @attention This method has not calculated wages for twiddle factors (W) yet
 	 */
 	void muged_initialize_fft(muged_array& signal, muged_array& radix_2_signal, muged_array& spectrum, muged_array& W);
 
@@ -192,6 +214,31 @@ protected:
 	 * }
 	 */
 	muged_array* muged_fft_kernel(muged_array& radix_2_signal);
+
+	/**
+	 * @fn muged_ifft_kernel(muged_array& radix_2_signal)
+	 *
+	 * IFFT kernel - it calculates ifft using
+	 * divide and conquer algorithm (Cooley–Tukey)
+	 *
+	 * @param radix_2_signal - time samples
+	 * @return muged_array* - signal in time domain
+	 *
+	 * IFFT(n, a0, a1, a2, a3, ... , an-1)
+	 * {
+	 * 	if (n == 1) return a0;
+	 * 	w = e^2πi/n;
+	 * 	(e0, e1, e2, e3,..., en/2-1) = IFFT(n/2, a0, a2, a4, a6,..., an-2);
+	 * 	(d0, d1, d2, d3,..., dn/2-1) = IFFT(n/2, a1, a3, a5, a7,..., an-1);
+	 * 	for k = 0 to n/2-1
+	 * 	{
+	 * 		y_k = e_k + w^k*d_k;
+	 * 		y_k+n/2 = e_k – w^k*d_k
+	 * 	};
+	 * 	return (y1, y2, y3,..., yn-1);
+	 * }
+	 */
+	muged_array* muged_ifft_kernel(muged_array& radix_2_signal);
 
 };
 

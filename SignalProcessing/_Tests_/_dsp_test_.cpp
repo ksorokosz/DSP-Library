@@ -203,6 +203,17 @@ void _dsp_test_()
 		__check__(spectrum.array[i].muged_imag(), 5, ref_spectrum.array[i].muged_imag());
 	}
 
+	//Calculate IFFT
+	muged_array signal6;
+	dsp.muged_1D_ifft(spectrum, signal6);
+	INFO("-------IFFT-------");
+	for (unsigned int i = 0; i < signal5.length; i++)
+	{
+		__check__(signal6.array[i].muged_real(), 5, signal5.array[i].muged_real());
+		__check__(signal6.array[i].muged_imag(), 5, signal5.array[i].muged_imag());
+	}
+
+
 	INFO("--> dsp test success");
 
 	delete [] signal1.array;
@@ -210,6 +221,7 @@ void _dsp_test_()
 	delete [] signal3.array;
 	delete [] signal4.array;
 	delete [] signal5.array;
+	delete [] signal6.array;
 	delete [] ref_correlation.array;
 	delete [] correlation.array;
 	delete [] correlation_part_1.array;

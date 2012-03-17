@@ -71,14 +71,34 @@ public:
 	virtual void muged_1D_fft(muged_array& signal, muged_array& spectrum) = 0;
 
 	/**
+	 * @fn muged_1D_ifft(muged_array& spectrum, muged_array& signal)
+	 *
+	 * Calculates 1D Inverse Fast Fourier Transform
+	 *
+	 * @param spectrum - 1D signal spectrum
+	 * @param signal - result, signal in time domain (memory will be allocated)
+	 */
+	virtual void muged_1D_ifft(muged_array& spectrum, muged_array& signal) = 0;
+
+	/**
 	 * @fn muged_2D_fft(muged_matrix& ssignal, muged_matrix& spectrum)
 	 *
 	 * Calculates 2D Fast Fourier Transform
 	 *
-	 * @param signal - 1D signal
+	 * @param signal - 2D signal
 	 * @param spectrum - result (memory will be allocated)
 	 */
 	virtual void muged_2D_fft(muged_matrix& signal, muged_matrix& spectrum) = 0;
+
+	/**
+	 * @fn muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal)
+	 *
+	 * Calculates 2D Inverse Fast Fourier Transform
+	 *
+	 * @param spectrum - 2D signal spectrum
+	 * @param signal - result, signal in "time" domain (memory will be allocated)
+	 */
+	virtual void muged_2D_ifft(muged_matrix& spectrum, muged_matrix& signal) = 0;
 
 	/**
 	 * @fn muged_mean(muged_array& signal)
