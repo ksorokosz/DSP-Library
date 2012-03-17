@@ -2,8 +2,6 @@
 #include "MUGED_DSP.h"
 
 
-
-
 /**
  * DSP test - testing DSP library. Compares calculated values to
  * the results obtained from GNU Octave
@@ -230,6 +228,8 @@ void _dsp_test_()
 	delete [] spectrum.array;
 	delete [] ref_spectrum.array;
 }
+
+
 
 #define NEXCLUDE
 #ifndef EXCLUDE
