@@ -10,24 +10,9 @@
 
 #include "MUGED_Definitions.h"
 
-inline void __check__(double tested_value, int precision, double reference_value)
-{
-	double value = INIT;
-	if (reference_value >= 0)
-	{
-		reference_value = (int)(reference_value * pow(10.0,precision) + 0.5)/(pow(10.0,precision));
-		value = (int)(tested_value * pow(10.0,precision) + 0.5)/(pow(10.0,precision));
-	}
-	else
-	{
-		reference_value = (int)(reference_value * pow(10.0,precision) - 0.5)/(pow(10.0,precision));
-		value = (int)(tested_value * pow(10.0,precision) - 0.5)/(pow(10.0,precision));
-	}
-
-	INFO("Tested: %e, Reference: %e", value, reference_value);
-
-	assert(value == reference_value);
-}
+#include "cute.h"
+#include "ide_listener.h"
+#include "cute_runner.h"
 
 void _complex_test_();
 void _dsp_test_();

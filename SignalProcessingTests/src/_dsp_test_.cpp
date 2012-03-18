@@ -1,16 +1,17 @@
 #include "MUGED_Tests.h"
 #include "MUGED_DSP.h"
 
-
 /**
  * DSP test - testing DSP library. Compares calculated values to
  * the results obtained from GNU Octave
  */
 void _dsp_test_()
 {
-	INFO("--> dsp test invoke");
-	MUGED_DSP dsp;
+	ASSERTM("Test shouldn't fails", true);
 
+	const double precision = 0.0001;
+
+	MUGED_DSP dsp;
 	muged_array signal1;
 	signal1.length = 5;
 	signal1.array = new muged_scalar[signal1.length];
@@ -33,29 +34,28 @@ void _dsp_test_()
 
 	muged_scalar mean = dsp.muged_mean(signal1);
 
-	__check__(mean.muged_real(), 0, 2);
-	__check__(mean.muged_imag(), 0, 4);
+	ASSERT_EQUAL_DELTA(2, mean.muged_real(), precision);
+	ASSERT_EQUAL_DELTA(4, mean.muged_imag(), precision);
 
 	muged_scalar mean_square = dsp.muged_mean_square(signal1);
 
-	__check__(mean_square.muged_real(),0, -18);
-	__check__(mean_square.muged_imag(),0, 24);
+	ASSERT_EQUAL_DELTA(-18, mean_square.muged_real(), precision);
+	ASSERT_EQUAL_DELTA(24, mean_square.muged_imag(), precision);
 
 	muged_scalar root_mean_square = dsp.muged_root_mean_square(signal1);
 
-	__check__(root_mean_square.muged_real(), 4, 5.4772);
-	__check__(root_mean_square.muged_imag(), 0, 0);
-
+	ASSERT_EQUAL_DELTA(5.4772, root_mean_square.muged_real(), precision);
+	ASSERT_EQUAL_DELTA(0, root_mean_square.muged_imag(), precision);
 
 	muged_scalar std_real = dsp.muged_standard_deviation(signal2);
 
-	__check__(std_real.muged_real(), 4, 1.4142);
-	__check__(std_real.muged_imag(), 0, 0);
+	ASSERT_EQUAL_DELTA(1.4142, std_real.muged_real(), precision);
+	ASSERT_EQUAL_DELTA(0, std_real.muged_imag(), precision);
 
 	muged_scalar std = dsp.muged_standard_deviation(signal1);
 
-	__check__(std.muged_real(), 4, 1.4142);
-	__check__(std.muged_imag(), 4, 2.8284);
+	ASSERT_EQUAL_DELTA(1.4142, std.muged_real(), precision);
+	ASSERT_EQUAL_DELTA(2.8284, std.muged_imag(), precision);
 
 	muged_array ref_correlation;
 	ref_correlation.length = 21;
@@ -114,37 +114,31 @@ void _dsp_test_()
 	muged_array correlation;
   dsp.muged_1D_correlation(signal3, signal4, 0, signal4.length-1, correlation);
 
-  INFO("----------CORRELATION----------");
   for (unsigned int i = 0; i < correlation.length; i++)
   {
-  	__check__(correlation.array[i].muged_real(), 4, ref_correlation.array[i].muged_real());
-  	__check__(correlation.array[i].muged_imag(), 4, ref_correlation.array[i].muged_imag());
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_real(), correlation.array[i].muged_real(), precision);
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_imag(), correlation.array[i].muged_imag(), precision);
   }
 
   muged_array correlation_part_1;
   dsp.muged_1D_correlation(signal3, signal4, 0, 3, correlation_part_1);
 
-  INFO("-------CORRELATION PART 1-------");
   for (unsigned int i = 0; i < correlation_part_1.length; i++)
   {
-  	INFO("PART 1 valid: %d", i + signal4.length -1 - 3);
-  	__check__(correlation_part_1.array[i].muged_real(), 4, ref_correlation.array[i + signal4.length -1 - 3].muged_real());
-  	__check__(correlation_part_1.array[i].muged_imag(), 4, ref_correlation.array[i + signal4.length -1 - 3].muged_imag());
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i + signal4.length -1 - 3].muged_real(), correlation_part_1.array[i].muged_real(), precision);
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i + signal4.length -1 - 3].muged_imag(), correlation_part_1.array[i].muged_imag(), precision);
   }
 
   muged_array correlation_part_2;
   dsp.muged_1D_correlation(signal3, signal4, 3, signal4.length-1, correlation_part_2);
 
-  INFO("-------CORRELATION PART 2-------");
   for (unsigned int i = 0; i < correlation_part_2.length; i++)
   {
   	if ( i >= signal4.length - 1 - 3 && i < correlation_part_1.length + signal4.length - 1 - 3)
   		continue; // In this range correlation part 1 is valid
 
-  	INFO("PART 2 valid: %d", i);
-
-  	__check__(correlation_part_2.array[i].muged_real(), 4, ref_correlation.array[i].muged_real());
-  	__check__(correlation_part_2.array[i].muged_imag(), 4, ref_correlation.array[i].muged_imag());
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_real(), correlation_part_2.array[i].muged_real(), precision);
+  	ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_imag(), correlation_part_2.array[i].muged_imag(), precision);
   }
 
   //Merge correlation
@@ -154,22 +148,15 @@ void _dsp_test_()
   for (unsigned int i = 0; i < correlation_merged.length; i++)
   {
   	if ( i >= signal4.length - 1 - 3 && i < correlation_part_1.length + signal4.length - 1 - 3)
-  	{
-  		INFO("PART 1 valid: %d",i);
   		correlation_merged.array[i] = correlation_part_1.array[i - (signal4.length - 1 - 3)];
-  	}
   	else
-  	{
-  		INFO("PART 2 valid: %d",i);
   		correlation_merged.array[i] = correlation_part_2.array[i];
-  	}
   }
 
-  INFO("-------CORRELATION MERGED-------");
 	for (unsigned int i = 0; i < correlation_merged.length; i++)
 	{
-		__check__(correlation_merged.array[i].muged_real(), 4, ref_correlation.array[i].muged_real());
-		__check__(correlation_merged.array[i].muged_imag(), 4, ref_correlation.array[i].muged_imag());
+		ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_real(), correlation_merged.array[i].muged_real(), precision);
+		ASSERT_EQUAL_DELTA(ref_correlation.array[i].muged_imag(), correlation_merged.array[i].muged_imag(), precision);
 	}
 
 
@@ -194,25 +181,20 @@ void _dsp_test_()
 	dsp.muged_1D_fft(signal5, spectrum);
 
 	//Check
-	INFO("-------SPECTRUM-------");
 	for (unsigned int i = 0; i < ref_spectrum.length; i++)
 	{
-		__check__(spectrum.array[i].muged_real(), 5, ref_spectrum.array[i].muged_real());
-		__check__(spectrum.array[i].muged_imag(), 5, ref_spectrum.array[i].muged_imag());
+		ASSERT_EQUAL_DELTA(ref_spectrum.array[i].muged_real(), spectrum.array[i].muged_real(), precision);
+		ASSERT_EQUAL_DELTA(ref_spectrum.array[i].muged_imag(), spectrum.array[i].muged_imag(), precision);
 	}
 
 	//Calculate IFFT
 	muged_array signal6;
 	dsp.muged_1D_ifft(spectrum, signal6);
-	INFO("-------IFFT-------");
 	for (unsigned int i = 0; i < signal5.length; i++)
 	{
-		__check__(signal6.array[i].muged_real(), 5, signal5.array[i].muged_real());
-		__check__(signal6.array[i].muged_imag(), 5, signal5.array[i].muged_imag());
+		ASSERT_EQUAL_DELTA(signal5.array[i].muged_real(), signal6.array[i].muged_real(), precision);
+		ASSERT_EQUAL_DELTA(signal5.array[i].muged_imag(), signal6.array[i].muged_imag(), precision);
 	}
-
-
-	INFO("--> dsp test success");
 
 	delete [] signal1.array;
 	delete [] signal2.array;
@@ -227,20 +209,8 @@ void _dsp_test_()
 	delete [] correlation_merged.array;
 	delete [] spectrum.array;
 	delete [] ref_spectrum.array;
+
+	ASSERTM("Test shouldn't fails", true);
 }
-
-
-
-#define NEXCLUDE
-#ifndef EXCLUDE
-
-int main()
-{
-	_dsp_test_();
-
-	return 0;
-}
-
-#endif
 
 

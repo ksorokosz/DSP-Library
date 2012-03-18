@@ -13,7 +13,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <cassert>
 #include <string>
 
 using namespace std;
